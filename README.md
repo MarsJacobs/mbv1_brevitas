@@ -37,6 +37,11 @@ https://pytorch.org/docs/stable/quantization.html
 - PACT : https://arxiv.org/abs/1805.06085 
 - LSQ : https://arxiv.org/abs/1902.08153
 
+## Traininig
+- You can try Quantization Aware Training with this command.
+- Your Pretrained Full Precision Model file's directory shoulb be specified in cfg/quant_mobilenet_v1_cifar10_2b.ini, PRETRAINED_DIR
+
+      python imagenet_train.py --network quant_mobilenet_v1_cifar10_2b --experiments ./experiments --optim SGD --scheduler STEP --pretrained --gpus 0 --lr 0.01 --weight_decay 0.003 
 
 
 
