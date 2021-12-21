@@ -1,0 +1,1 @@
+python imagenet_val.py --imagenet-dir /home/ms/ILSVRC2012 --model quant_mobilenet_v1_4b --gpu $1 --pretrained
