@@ -31,9 +31,8 @@ CIFAR10 Full Precision MB1 Accuracy is **91.6**.
 - PACT_SAWB : This means that Quantizing Activation uses PACT Algorithm, Quantizing Weight uses LSQ Algorithm.
 
 **Quantization Alogorithm**
-You can find more detailed information about Quantization in following link.
-https://pytorch.org/docs/stable/quantization.html
-
+You can find more detailed information about Quantization in this link.
+- Quantization : https://pytorch.org/docs/stable/quantization.html
 - PACT : https://arxiv.org/abs/1805.06085 
 - LSQ : https://arxiv.org/abs/1902.08153
 
