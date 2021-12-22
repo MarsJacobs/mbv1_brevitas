@@ -42,15 +42,29 @@ You can find more detailed information about Quantization in this link.
 
       python imagenet_train.py --network quant_mobilenet_v1_cifar10_2b --experiments ./experiments --optim SGD --scheduler STEP --pretrained --gpus 0 --lr 0.01 --weight_decay 0.003 
 
+## Accelerator Deploy Results
 
+After Training QNN using Brevitas, you can export onnx file for finn compiler (refer to onnx_make.py)
+https://github.com/xilinx/finn
+Using finn compiler, you can make bitfile for 2bit Quantized CIFAR10 MobileNetv1 Inference on Alveo FPGA Board.
 
-## Other Features regarding FINN 
+FPGA Board Inference time and Hardware Usage results are followed.
 
-The reduced-precision implementation of MobileNet V1 makes the following assumptions:
-- Floating point per-channel scale factors can be implemented by the target hardware, e.g. using FINN-style thresholds.
-- Input preprocessing is modified to have a single scale factor rather than a per-channel one, so that it can be propagated through the first convolution to thresholds.
-- Weights of the first layer are always quantized to 8 bit.
-- Padding in the first convolution is removed, so that the input's mean can be propagated through the first convolution to thresholds.
-- Scaling of the fully connected layer is per-layer, so that the output of the network doesn't require rescaling.
-- Per-channel scale factors before depthwise convolution layers can be propagate through the convolution.
-- Quantized avg pool performs a sum followed by a truncation to the specified bit-width (in place of a division).
+**Hardware Unit Usage**
+  | PACT A4W4 | PACT A2W2
+-- | -- | --
+Date | 20211216 | 20211220
+Dataset | CIFAR10 | CIFAR10
+Total LUTs | 514905 | 275234
+LUTRAM | 24269 | 17495
+Flip-Flop | 564244 | 374026
+BRAM36 | 703 | 490
+BRAM18 | 135 | 41
+URAM | 32 | 22
+DSP | 103 | 103
+
+**FPGA Board Inference Performance**
+  | Date | Dataset | Pytorch ACC | HW Acc | Full Validation Time (per loop) (ms) | Runtime (ms) | Throughput [images/s] | DRAM in BW | DRAM out BW | fclk (mhz) | batch_size | fold_input (ms) | pack_input (ms) | copy_input_data_to_device (ms) | copy_output_data_to_device (ms) | unpack_output (ms) | unfold_output (ms)
+-- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --
+PACT A4W4 | 20211216 | CIFAR10 | 91.44 | 91.34 | 535 | 51.72 | 19333.93 | 59.39 | 0.02 | 245 | 1000 | 0.04 | 0.026 | 1.21 | 0.167 | 0.31 | 0.014
+PACT A2W2 | 20211220 | CIFAR10 | 87.40 | 87.45 | 635.00 | 61.85 | 16,169.31 | 49.67 | 0.02 | 209.00 | 1,000.00 | 0.02 | 0.02 | 1.26 | 0.13 | 0.23 | 0.03
