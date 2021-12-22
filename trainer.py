@@ -36,7 +36,7 @@ from torchvision.datasets import MNIST, CIFAR10
 from .logger import Logger, TrainingEpochMeters, EvalEpochMeters
 from .models import model_with_cfg
 #from .models.losses import SqrHingeLoss
-
+from .bn_fold import fuse_bn_recursively
 
 class MirrorMNIST(MNIST):
 
@@ -333,6 +333,17 @@ class Trainer(object):
                 if not self.args.dry_run:
                     self.checkpoint_best(epoch, "checkpoint.tar")
                 self.logger.info(f"======> Eval Results : {top1avg} | Previous BEST ACC : {self.best_val_acc}")
+            
+            for n, p in self.model.named_parameters():
+                if "tensor_quant.scaling_impl.value" in n:
+                    print(f"Activation ===> {p.item()}")
+            
+            print()
+
+            for n, p in self.model.named_parameters():
+                if "weight_quant.tensor_quant.s" in n:
+                    print(f"Weight ===> {p.item()}")
+
 
         # training ends
         if not self.args.dry_run:
@@ -366,6 +377,7 @@ class Trainer(object):
             target_var = target
 
             # compute output
+            
             output = self.model(input)
 
             # measure model elapsed time

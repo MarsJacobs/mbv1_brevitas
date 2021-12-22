@@ -127,7 +127,8 @@ def launch(cmd_args):
     # Execute
     if args.evaluate:
         with torch.no_grad():
-            trainer.eval_model()
+            top1_acc = trainer.eval_model()
+            print(f"==> Final Top1 ACC is {top1_acc}")
     else:
         trainer.train_model()
 

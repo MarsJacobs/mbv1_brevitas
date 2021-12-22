@@ -50,10 +50,10 @@ def main():
 
     model.load_state_dict(model_dict, strict=False)
 
-    from brevitas.export import FINNManager
+    #from brevitas.export import FINNManager
 
-    FINNManager.export(model, input_shape=(1, 3, 224, 224), export_path='mobilenetv1_pact.onnx')    
-    import pdb; pdb.set_trace()
+    #FINNManager.export(model, input_shape=(1, 3, 224, 224), export_path='mobilenetv1_pact.onnx')    
+    #import pdb; pdb.set_trace()
     
     if args.gpu is not None:
         torch.cuda.set_device(args.gpu)
