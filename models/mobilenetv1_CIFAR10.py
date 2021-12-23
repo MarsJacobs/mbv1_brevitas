@@ -93,8 +93,7 @@ class ConvBlock(nn.Module):
             first_block = False):
         super(ConvBlock, self).__init__()
         
-        # if weight_bit_width == 8:
-        #     self.conv = nn.Conv2d(in_channels, out_channels, kernel_size = kernel_size, stride=stride, padding= padding, groups=groups, bias=False)
+        
         if first_block:
             self.conv = QuantConv2d(
             in_channels=in_channels,
@@ -104,7 +103,7 @@ class ConvBlock(nn.Module):
             padding=padding,
             groups=groups,
             bias=False,
-            weight_quant=CommonIntWeightPerChannelQuant,#LSQ_weight_quant_2bits, #CommonIntWeightPerChannelQuant, # LSQ_weight_quant_2bits, #, #PACT_weight_quant_2bits, # MS weight Quantization 
+            weight_quant=LSQ_weight_quant_2bits,
             weight_bit_width=weight_bit_width
             )
         
@@ -117,17 +116,14 @@ class ConvBlock(nn.Module):
             padding=padding,
             groups=groups,
             bias=False,
-            weight_quant=CommonIntWeightPerChannelQuant,#LSQ_weight_quant_2bits, # LSQ_weight_quant_2bits, #, #PACT_weight_quant_2bits, # MS weight Quantization 
+            weight_quant=LSQ_weight_quant_2bits,
             weight_bit_width=weight_bit_width)
         
-        #self.conv = nn.Conv2d(in_channels, out_channels, kernel_size = kernel_size, stride=stride, padding= padding, groups=groups, bias=False)
         
         self.bn = nn.BatchNorm2d(num_features=out_channels, eps=bn_eps)
         self.activation = QuantReLU(
-            act_quant=CommonUintActQuant, #PACT_activation_quant_2bits, #PACT_activation_quant_2bits, # MS Activation Quantization PACT_activation_quant_2bits, #
+            act_quant=PACT_activation_quant_2bits,
             bit_width=act_bit_width,
-            # per_channel_broadcastable_shape=(1, out_channels, 1, 1),
-            # scaling_per_channel=activation_scaling_per_channel,
             return_quant_tensor=True)
         
         
